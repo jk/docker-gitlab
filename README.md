@@ -33,6 +33,7 @@
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
       - [Establishing trust with your server](#establishing-trust-with-your-server)
       - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
+      - [Configuring HSTS](#configuring-hsts)
     - [Putting it all together](#putting-it-all-together)
     - [Run under sub URI](#run-under-sub-uri)
     - [OmniAuth Integration](#omniauth-integration)
@@ -597,6 +598,20 @@ Copy the ca.crt file into the certs directory on the [datastore](#data-store). T
 
 By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificates) is added to the trusted certificates list.
 
+#### Configuring HSTS
+HSTS if supported by the browsers makes sure that your users will only reach your sever via HTTPS. When the user comes for the first time it sees a header from the server which states for how long from now this site should only be reachable via HTTPS - that's the HSTS max-age value.
+
+With GITLAB_HTTPS_HSTS_MAXAGE you can configure that value. The default value is **63072000** seconds. If you want to disable a already sent HSTS MAXAGE value, set it to **0**.
+
+```bash
+docker run --name=gitlab -d \
+  -e 'GITLAB_HTTPS=true' \
+  -e 'GITLAB_HTTPS_ONLY=false' \
+  -e 'GITLAB_HTTPS_HSTS_MAXAGE=2592000'
+  -v /opt/gitlab/data:/home/git/data \
+  sameersbn/gitlab:latest
+```
+
 ### Putting it all together
 
 ```bash
@@ -700,6 +715,7 @@ Below is the complete list of available options that can be used to customize yo
 - **GITLAB_RELATIVE_URL_ROOT**: The sub URI of the GitLab server, e.g. /gitlab. No default.
 - **GITLAB_HTTPS**: Set to true to enable https support, disabled by default.
 - **GITLAB_HTTPS_ONLY**: Configure access over plain http when GITLAB_HTTPS is enabled. Should be set to false when using a load balancer. Defaults to true.
+- **GITLAB_HTTPS_HSTS_MAXAGE**: Congfigure HSTS max-age lifespan in seconds. Default value is 63072000 seconds.
 - **SSL_SELF_SIGNED**: Set to true when using self signed ssl certificates. false by default.
 - **SSL_CERTIFICATE_PATH**: Location of the ssl certificate. Defaults to /home/git/data/certs/gitlab.crt
 - **SSL_KEY_PATH**: Location of the ssl private key. Defaults to /home/git/data/certs/gitlab.key

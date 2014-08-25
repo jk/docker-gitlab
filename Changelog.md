@@ -2,6 +2,7 @@
 
 **latest**
 - added OAUTH_GOOGLE_RESTRICT_DOMAIN config option.
+- added GITLAB_HTTPS_HSTS_MAXAGE to specify HSTS max age value.
 
 **7.2.0**
 - upgrade to gitlab-ce 7.2.0
